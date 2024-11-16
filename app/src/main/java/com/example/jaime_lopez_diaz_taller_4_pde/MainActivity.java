@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jaime_lopez_diaz_taller_4_pde.fragments.BotonesFragment;
 import com.example.jaime_lopez_diaz_taller_4_pde.fragments.SaludoFragment;
+import com.example.jaime_lopez_diaz_taller_4_pde.widget.CustomWidget;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "MyAppPrefs";
+    private CustomWidget customWidget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragmentContainerBotones, new BotonesFragment())
                     .commit();
         }
+
+        // Referenciar el widget
+        customWidget = findViewById(R.id.customWidget);
     }
 
     private void applyBackgroundFromPreferences() {
@@ -49,5 +54,19 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Reaplicar el fondo cada vez que la actividad se reanude
         applyBackgroundFromPreferences();
+
+        // Registrar el sensor en el widget
+        if (customWidget != null) {
+            customWidget.registerSensorListener();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Desregistrar el sensor en el widget
+        if (customWidget != null) {
+            customWidget.unregisterSensorListener();
+        }
     }
 }
