@@ -1,72 +1,158 @@
 @startuml
 
 class MainActivity {
-    - BackgroundUtil backgroundUtil
+    - static final String PREFS_NAME
+    - CustomWidget customWidget
+    - void onCreate(Bundle)
+    - void applyBackgroundFromPreferences()
+    - void onResume()
+    - void onPause()
+}
+
+class CustomWidget {
+    - TextView sensorDataTextView
+    - SensorManager sensorManager
+    - Sensor accelerometer
+    + CustomWidget(Context)
+    + CustomWidget(Context, AttributeSet)
+    + CustomWidget(Context, AttributeSet, int)
+    - void init(Context)
+    + void onSensorChanged(SensorEvent)
+    + void onAccuracyChanged(Sensor, int)
+    + void registerSensorListener()
+    + void unregisterSensorListener()
+}
+
+class BackgroundUtil {
+    - static final String PREFS_NAME
+    - static final String KEY_BACKGROUND_TYPE
+    - static final String KEY_BACKGROUND_VALUE
+    - static final String TAG
+    - SharedPreferences sharedPreferences
+    - ExecutorService executorService
+    + BackgroundUtil(Context)
+    + void applyBackground(Activity)
+    + void shutdown()
+}
+
+class SimulatedNetworkTask {
+    - static final String TAG
+    - Context context
+    - TextView resultTextView
+    - ExecutorService executorService
+    + SimulatedNetworkTask(Context, TextView)
+    + void execute()
+}
+
+class FetchGreetingTask {
+    - static final String TAG
+    - Context context
+    - TextView greetingTextView
+    + FetchGreetingTask(Context, TextView)
+    + void onPreExecute()
+    + String doInBackground(Void)
+    + void onPostExecute(String)
+}
+
+class UserViewModel {
+    - MutableLiveData<String> userName
+    - SharedPreferences sharedPreferences
+    - UserRepository userRepository
+    + UserViewModel(Application)
+    + LiveData<String> getUserName()
+    + void saveUserName(String)
+    - void loadUserName()
+}
+
+class SaludoFragment {
     - TextView greetingTextView
     - ExecutorService executorService
     - String lastGreeting
-    + onCreate(Bundle): void
-    + onResume(): void
-    + onDestroy(): void
-    - startGreetingChecker(): void
-    - calculateNextCheckDelay(): long
-    - getMillisUntilNextHour(int): long
-    - getGreetingMessage(): String
-    - updateGreeting(String): void
+    + View onCreateView(LayoutInflater, ViewGroup, Bundle)
+    - void startGreetingChecker()
+    - long calculateNextCheckDelay()
+    - long getMillisUntilNextHour(int)
+    - String getGreetingMessage()
+    - void updateGreeting(String)
+    + void onDestroy()
+}
+
+class BotonesFragment {
+    + View onCreateView(LayoutInflater, ViewGroup, Bundle)
+}
+
+class DatabaseHelper {
+    - static final int DATABASE_VERSION
+    - static final String DATABASE_NAME
+    + static final String TABLE_USERS
+    + static final String COLUMN_ID
+    + static final String COLUMN_NAME
+    - static final String TABLE_CREATE
+    + DatabaseHelper(Context)
+    + void onCreate(SQLiteDatabase)
+    + void onUpgrade(SQLiteDatabase, int, int)
+}
+
+class UserRepository {
+    - DatabaseHelper dbHelper
+    - SQLiteDatabase database
+    - FirebaseFirestore firestore
+    + UserRepository(Context)
+    + void open()
+    + void close()
+    + void saveUserName(String)
+    + String getUserName()
 }
 
 class RedActivity {
     - EditText nameEditText
     - TextView nameTextView
     - UserViewModel userViewModel
-    - Button startTaskButton
-    + onCreate(Bundle): void
+    - BackgroundUtil backgroundUtil
+    + void onCreate(Bundle)
+    + void onResume()
+    + void onDestroy()
 }
 
 class ConfiguracionActivity {
-    - SharedPreferences sharedPreferences
+    - static final String TAG
+    - static final float SHAKE_THRESHOLD
+    - static final int SHAKE_RESET_TIME
     - BackgroundUtil backgroundUtil
-    + onCreate(Bundle): void
-    - setColorAndReturn(int): void
-    - setImageAndReturn(int): void
+    - SensorManager sensorManager
+    - Sensor accelerometer
+    - long lastShakeTime
+    - RadioGroup radioGroupBackgroundType
+    - LinearLayout colorSelectionLayout
+    - LinearLayout imageSelectionLayout
+    - List<CardView> colorButtons
+    - List<CardView> imageButtons
+    - int currentIndex
+    - boolean isColorMode
+    + void onCreate(Bundle)
+    - int getColorFromButton(CardView)
+    - int getImageFromButton(CardView)
+    - void setColorAndReturn(int)
+    - void setImageAndReturn(int)
+    + void onResume()
+    + void onPause()
+    + void onSensorChanged(SensorEvent)
+    + void onAccuracyChanged(Sensor, int)
+    - void moveToNextButton()
 }
 
-class BackgroundUtil {
-    - SharedPreferences sharedPreferences
-    - ExecutorService executorService
-    + applyBackground(Activity): void
-    + shutdown(): void
-}
-
-class FetchGreetingTask {
-    - Context context
-    - TextView greetingTextView
-    + FetchGreetingTask(Context, TextView)
-    + doInBackground(Void...): String
-    + onPreExecute(): void
-    + onPostExecute(String): void
-}
-
-class SimulatedNetworkTask {
-    - Context context
-    - TextView resultTextView
-    - ExecutorService executorService
-    + execute(): void
-    - simulateNetworkTask(): String
-}
-
-class UserViewModel {
-    - MutableLiveData<String> userName
-    - SharedPreferences sharedPreferences
-    + getUserName(): LiveData<String>
-    + saveUserName(String): void
-    - loadUserName(): void
-}
-
-RedActivity --> UserViewModel : utiliza
-RedActivity --> SimulatedNetworkTask : utiliza
-MainActivity --> BackgroundUtil : utiliza
-MainActivity --> FetchGreetingTask : utiliza
-ConfiguracionActivity --> BackgroundUtil : utiliza
+MainActivity --> CustomWidget
+MainActivity --> SaludoFragment
+MainActivity --> BotonesFragment
+MainActivity --> BackgroundUtil
+MainActivity --> UserViewModel
+UserViewModel --> UserRepository
+UserRepository --> DatabaseHelper
+UserRepository --> FirebaseFirestore
+RedActivity --> UserViewModel
+RedActivity --> SimulatedNetworkTask
+SaludoFragment --> FetchGreetingTask
+ConfiguracionActivity --> BackgroundUtil
+ConfiguracionActivity --> SensorManager
 
 @enduml

@@ -1,19 +1,34 @@
 @startuml
-actor Usuario
+left to right direction
+actor Usuario as U
 
-usecase "Ver saludo personalizado" as UC_VerSaludo
-usecase "Configurar fondo" as UC_ConfigurarFondo
-usecase "Guardar nombre de usuario" as UC_GuardarNombre
-usecase "Cambiar fondo a color" as UC_CambiarColor
-usecase "Cambiar fondo a imagen" as UC_CambiarImagen
-usecase "Gestionar operación de red" as UC_Red
+rectangle "Sistema de la Aplicación" {
 
-Usuario --> UC_VerSaludo
-Usuario --> UC_ConfigurarFondo
-Usuario --> UC_Red
+    usecase "Configurar Fondo de Pantalla" as CF
+    usecase "Cambiar Fondo (Color o Imagen)" as CFCI
+    usecase "Guardar Configuración de Fondo" as GCF
+    usecase "Visualizar Saludo Dinámico" as VSD
+    usecase "Interactuar con Botones" as IB
+    usecase "Ir a Configuración" as IC
+    usecase "Ir a Actividad Principal" as IAP
+    usecase "Visualizar Datos del Sensor" as VDS
+    usecase "Guardar Nombre de Usuario" as GNU
+    usecase "Cargar Datos desde la Red Simulada" as CDR
+    usecase "Mostrar Nombre Guardado" as MNG
 
-UC_ConfigurarFondo --> UC_CambiarColor : <<include>>
-UC_ConfigurarFondo --> UC_CambiarImagen : <<include>>
-UC_Red --> UC_GuardarNombre : <<include>>
+}
 
+U --> CF : Configura fondo de pantalla inicial
+CF --> CFCI : Cambia fondo entre color o imagen
+CF --> GCF : Guarda fondo seleccionado
+
+U --> VSD : Visualiza el saludo según la hora
+U --> IB : Interactúa con los botones
+IB --> IC : Navega a Configuración
+IB --> IAP : Navega a Actividad Principal
+
+U --> VDS : Visualiza datos del sensor (acelerómetro)
+U --> GNU : Guarda el nombre ingresado
+GNU --> MNG : Muestra nombre guardado
+U --> CDR : Carga datos simulados desde la red
 @enduml
