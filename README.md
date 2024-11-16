@@ -123,5 +123,5 @@ Jaime López Díaz
 - Optimización del manejo de sensores y diseño dinámico.
 
 ### Anotaciones
-- Agitar el teléfono movil vertical u horizontalmente para ir cambiando entre distintos fondos de pantalla.
+- Agitar el teléfono móvil vertical u horizontalmente para ir cambiando entre distintos fondos de pantalla.
 
