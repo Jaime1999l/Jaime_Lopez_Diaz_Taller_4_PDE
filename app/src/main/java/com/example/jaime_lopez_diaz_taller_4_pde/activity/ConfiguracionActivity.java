@@ -185,7 +185,6 @@ public class ConfiguracionActivity extends AppCompatActivity implements SensorEv
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // No se necesita implementar
     }
 
     private void moveToNextButton() {
